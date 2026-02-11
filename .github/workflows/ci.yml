@@ -18,7 +18,7 @@ jobs:
       - name: Build and Tar with Buildx CLI
         run: |
           docker buildx build \
-            -- file Dockerfile.ecr \
+            --file Dockerfile.ecr \
             --platform linux/arm64 \
             --tag loki-mcp:latest \
             --output type=docker,dest=loki-mcp.tar \
