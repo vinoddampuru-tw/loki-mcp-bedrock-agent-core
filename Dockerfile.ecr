@@ -6,14 +6,15 @@ WORKDIR /app
 # Copy go.mod and go.sum files
 COPY go.mod go.sum ./
 
-# Download dependencies
-RUN go mod download
+# Copy vendor directory (pre-downloaded dependencies)
+COPY vendor ./vendor
 
 # Copy the source code
 COPY . .
 
 # Build the application for ARM64 architecture (required by AWS Bedrock AgentCore)
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o loki-mcp-server ./cmd/server
+# Use -mod=vendor to use vendored dependencies
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -mod=vendor -o loki-mcp-server ./cmd/server
 
 # Runtime stage - use ARM64 platform for AWS Bedrock AgentCore compatibility
 FROM --platform=linux/arm64 alpine:latest
